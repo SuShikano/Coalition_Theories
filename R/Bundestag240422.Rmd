@@ -1,0 +1,74 @@
+---
+title: "Bundestag at 22.04.2024"
+author: "Susumu Shikano"
+date: "2024-04-22"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+## Defining Bundestag
+
+```{r }
+majority <- 734/2 
+
+bundestag <- c(207,196,118,91,77,28,10)
+bundestag.label <- c("S","C","G","F","A","L","B")
+
+names(bundestag) <- bundestag.label
+bundestag
+
+```
+
+
+
+
+## Shapley and Shubik
+
+
+```{r }
+library(combinat)
+
+all.perm <- permn(bundestag)
+```
+
+
+Create a function which find the pivot given a voting order.
+
+```{r}
+
+find.pivot <- function(x){
+  winning <- cumsum(x)>majority
+  winning <- winning[winning]
+  pivot <- names(winning[1])
+  pivot
+}
+
+
+```
+
+
+Apple the function to all permutations
+
+
+```{r}
+all.pivot <- rep(NA,length(all.perm))
+
+for (i in 1:length(all.perm)){
+  all.pivot[i] <- find.pivot(all.perm[[i]])
+}
+
+all.pivot <- factor(all.pivot,levels=bundestag.label)
+```
+
+
+
+
+```{r}
+
+table(all.pivot)
+```
+
