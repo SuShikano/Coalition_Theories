@@ -1,0 +1,79 @@
+---
+title: "Figures for Sessions"
+author: "Susumu Shikano"
+date: "2024-04-23"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+Switch whether the figures will be stored in a pdf.
+
+```{r}
+fig.file.out <- FALSE
+```
+
+
+
+## Multidimensional weighted games
+
+Load a function from git.
+
+```{r}
+source("https://raw.githubusercontent.com/SuShikano/SusumuMiscR/main/R/Scatter_Bubble_Plot.r")
+```
+
+Create several weighted spatial games in a multidimensional space.
+
+```{r }
+
+if (fig.file.out){
+pdf("../figures/chaos%01d.pdf",onefile=F,
+    width=5,height=5,pointsize =10)
+}
+
+for (i.fig in 1:3){
+
+  if (i.fig==1){
+    size <- c(1,1,1)
+    sum(size)/2
+    x.pos <- c(1,2,3)
+    y.pos <- c(1,3,2)
+    }
+  if (i.fig==2){
+    size <- c(6,4,2,1,2)
+    sum(size)/2
+    x.pos <- c(2,3,1,4,3)
+    y.pos <- c(4,1,2,3,5)
+    }
+  if (i.fig==3){
+    size <- c(6,4,2,1,2)
+    sum(size)/2
+    x.pos <- c(3,3,1,4,3)
+    y.pos <- c(3,1,3,3,5)
+    }
+    positions <- cbind(x.pos,y.pos)
+    
+    for (i in 1:length(x.pos)){
+      x.pos <- c(x.pos,rep(x.pos[i],size[i]-1))
+      y.pos <- c(y.pos,rep(y.pos[i],size[i]-1))
+    }
+    
+    tab.out <- table(x.pos,y.pos)
+    
+    bubble.plot(x.pos,y.pos,
+                xlim=c(min(x.pos)-1,max(x.pos)+1),
+                ylim=c(min(y.pos)-1,max(y.pos)+1),
+                xlab="Sozio-Ökonomische Dim.",
+                ylab="Gesellschaftspol. Dim.")
+    abline(v=min(x.pos):max(x.pos),lty=2,col="grey")  
+    abline(h=min(y.pos):max(y.pos),lty=2,col="grey")  
+    
+    text(positions[,1],positions[,2],paste(c("A:","B:","C:","D:","E:")[1:length(size)],size))
+}
+if (fig.file.out) dev.off()
+
+```
